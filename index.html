@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PixelPlayground - Fun HTML5 Games</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        header {
+            background: linear-gradient(90deg, #f093fb 0%, #f5576c 100%);
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            color: white;
+            font-size: 3em;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+            letter-spacing: 2px;
+        }
+
+        .tagline {
+            color: #ffe4e1;
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .games-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .game-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .game-title {
+            color: #764ba2;
+            font-size: 2em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Tic-Tac-Toe Styles */
+        .tic-tac-toe-board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-gap: 10px;
+            margin: 20px auto;
+            justify-content: center;
+        }
+
+        .tic-cell {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            font-size: 2.5em;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .tic-cell:hover {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            transform: scale(1.05);
+        }
+
+        .tic-cell:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        /* Memory Game Styles */
+        .memory-board {
+            display: grid;
+            grid-template-columns: repeat(4, 100px);
+            grid-gap: 10px;
+            margin: 20px auto;
+            justify-content: center;
+        }
+
+        .memory-card {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            font-size: 2em;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .memory-card:hover {
+            transform: scale(1.05);
+        }
+
+        .memory-card.flipped {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .memory-card.matched {
+            background: #4CAF50;
+            cursor: default;
+        }
+
+        .game-info {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 1.2em;
+            color: #764ba2;
+            font-weight: bold;
+        }
+
+        .reset-btn {
+            display: block;
+            margin: 20px auto;
+            padding: 12px 30px;
+            background: linear-gradient(90deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .reset-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: white;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>PixelPlayground</h1>
+        <p class="tagline">Where Fun Never Stops! Play Amazing Browser Games</p>
+    </header>
+
+    <div class="container">
+        <div class="games-section">
+            <!-- Tic-Tac-Toe Game -->
+            <div class="game-card">
+                <h2 class="game-title">Tic-Tac-Toe</h2>
+                <div class="game-info" id="tic-info">Player X's Turn</div>
+                <div class="tic-tac-toe-board" id="tic-board"></div>
+                <button class="reset-btn" onclick="resetTicTacToe()">Reset Game</button>
+            </div>
+
+            <!-- Memory Card Flip Game -->
+            <div class="game-card">
+                <h2 class="game-title">Memory Card Flip</h2>
+                <div class="game-info" id="memory-info">Moves: 0 | Matches: 0/8</div>
+                <div class="memory-board" id="memory-board"></div>
+                <button class="reset-btn" onclick="resetMemoryGame()">Reset Game</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 PixelPlayground | Made with ❤️ for Gamers</p>
+    </footer>
+
+    <script>
+        // Tic-Tac-Toe Game Logic
+        let ticBoard = ['', '', '', '', '', '', '', '', ''];
+        let currentPlayer = 'X';
+        let gameActive = true;
+
+        function initTicTacToe() {
+            const boardElement = document.getElementById('tic-board');
+            boardElement.innerHTML = '';
+            for (let i = 0; i < 9; i++) {
+                const cell = document.createElement('button');
+                cell.className = 'tic-cell';
+                cell.onclick = () => handleTicClick(i);
+                boardElement.appendChild(cell);
+            }
+        }
+
+        function handleTicClick(index) {
+            if (ticBoard[index] !== '' || !gameActive) return;
+            
+            ticBoard[index] = currentPlayer;
+            updateTicBoard();
+            
+            if (checkWinner()) {
+                document.getElementById('tic-info').textContent = `Player ${currentPlayer} Wins! 🎉`;
+                gameActive = false;
+                return;
+            }
+            
+            if (!ticBoard.includes('')) {
+                document.getElementById('tic-info').textContent = "It's a Draw! 🤝";
+                gameActive = false;
+                return;
+            }
+            
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+            document.getElementById('tic-info').textContent = `Player ${currentPlayer}'s Turn`;
+        }
+
+        function updateTicBoard() {
+            const cells = document.querySelectorAll('.tic-cell');
+            cells.forEach((cell, index) => {
+                cell.textContent = ticBoard[index];
+                cell.disabled = ticBoard[index] !== '';
+            });
+        }
+
+        function checkWinner() {
+            const winPatterns = [
+                [0, 1, 2], [3, 4, 5], [6, 7, 8],
+                [0, 3, 6], [1, 4, 7], [2, 5, 8],
+                [0, 4, 8], [2, 4, 6]
+            ];
+            
+            return winPatterns.some(pattern => {
+                const [a, b, c] = pattern;
+                return ticBoard[a] && ticBoard[a] === ticBoard[b] && ticBoard[a] === ticBoard[c];
+            });
+        }
+
+        function resetTicTacToe() {
+            ticBoard = ['', '', '', '', '', '', '', '', ''];
+            currentPlayer = 'X';
+            gameActive = true;
+            document.getElementById('tic-info').textContent = "Player X's Turn";
+            updateTicBoard();
+        }
+
+        // Memory Card Game Logic
+        const cardEmojis = ['🎮', '🎯', '🎲', '🎪', '🎨', '🎭', '🎸', '🎺'];
+        let memoryCards = [...cardEmojis, ...cardEmojis];
+        let flippedCards = [];
+        let matchedPairs = 0;
+        let moves = 0;
+        let canFlip = true;
+
+        function initMemoryGame() {
+            memoryCards = shuffleArray([...cardEmojis, ...cardEmojis]);
+            matchedPairs = 0;
+            moves = 0;
+            flippedCards = [];
+            canFlip = true;
+            
+            const boardElement = document.getElementById('memory-board');
+            boardElement.innerHTML = '';
+            
+            memoryCards.forEach((emoji, index) => {
+                const card = document.createElement('button');
+                card.className = 'memory-card';
+                card.dataset.index = index;
+                card.dataset.emoji = emoji;
+                card.textContent = '?';
+                card.onclick = () => handleMemoryClick(card);
+                boardElement.appendChild(card);
+            });
+            
+            updateMemoryInfo();
+        }
+
+        function handleMemoryClick(card) {
+            if (!canFlip || card.classList.contains('flipped') || card.classList.contains('matched')) {
+                return;
+            }
+            
+            card.classList.add('flipped');
+            card.textContent = card.dataset.emoji;
+            flippedCards.push(card);
+            
+            if (flippedCards.length === 2) {
+                canFlip = false;
+                moves++;
+                updateMemoryInfo();
+                
+                setTimeout(checkMatch, 1000);
+            }
+        }
+
+        function checkMatch() {
+            const [card1, card2] = flippedCards;
+            
+            if (card1.dataset.emoji === card2.dataset.emoji) {
+                card1.classList.add('matched');
+                card2.classList.add('matched');
+                matchedPairs++;
+                updateMemoryInfo();
+                
+                if (matchedPairs === cardEmojis.length) {
+                    setTimeout(() => {
+                        document.getElementById('memory-info').textContent = `You Won! 🎉 Moves: ${moves}`;
+                    }, 300);
+                }
+            } else {
+                card1.classList.remove('flipped');
+                card2.classList.remove('flipped');
+                card1.textContent = '?';
+                card2.textContent = '?';
+            }
+            
+            flippedCards = [];
+            canFlip = true;
+        }
+
+        function updateMemoryInfo() {
+            document.getElementById('memory-info').textContent = 
+                `Moves: ${moves} | Matches: ${matchedPairs}/${cardEmojis.length}`;
+        }
+
+        function resetMemoryGame() {
+            initMemoryGame();
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Initialize games on page load
+        window.onload = () => {
+            initTicTacToe();
+            initMemoryGame();
+        };
+    </script>
+</body>
+</html>
